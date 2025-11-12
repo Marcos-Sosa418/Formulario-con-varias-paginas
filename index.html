@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario Multi-Página</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f3f6fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    form {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      max-width: 800px;
+      width: 90%;
+      margin: 40px auto;
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: #2a4d69;
+    }
+
+    label {
+      font-weight: 600;
+      color: #333;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .navigation-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 25px;
+    }
+
+    .navigation-buttons button {
+      background-color: #2a9d8f;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .navigation-buttons button:hover {
+      background-color: #21867a;
+    }
+
+    .navigation-buttons button[type="button"]:last-child {
+      background-color: #457b9d;
+    }
+
+    .navigation-buttons button[type="button"]:last-child:hover {
+      background-color: #366885;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #2a9d8f;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    #navigationBetweenData {
+      margin-top: 20px;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    #navigationBetweenData button {
+      background-color: #1d3557;
+    }
+
+    #navigationBetweenData button:hover {
+      background-color: #16324f;
+    }
+  </style>
+</head>
+<body>
+  <form id="multiPageForm">
+  
+    <!-- Página 1: Datos Personales -->
+    <div class="page active" id="page1">
+      <h2>Datos Personales</h2>
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre">
+
+      <label for="apellido">Apellido:</label>
+      <input type="text" id="apellido" name="apellido">
+
+      <label for="edad">Edad:</label>
+      <input type="number" id="edad" name="edad">
+
+      <label for="trabajo">Trabajo:</label>
+      <input type="text" id="trabajo" name="trabajo">
+
+      <div class="navigation-buttons">
+        <span></span>
+        <button type="button" onclick="nextPage()">➡️</button>
+        <button type="button" onclick="goToResumenPage()"> Mostrar Datos</button>
+      </div>
+    </div>
+
+    <!-- Página 2: Familiares -->
+    <div class="page" id="page2">
+      <h2>Familiares</h2>
+      <div id="familiaresContainer"></div>
+      <button type="button" onclick="addFamiliar()"> Añadir Familiar</button>
+      <div class="navigation-buttons">
+        <button type="button" onclick="previousPage()">⬅️</button>
+        <button type="button" onclick="nextPage()">➡️</button>
+        <button type="button" onclick="goToResumenPage()"> Mostrar Datos</button>
+      </div>
+    </div>
+
+    <!-- Página 3: Condiciones Pre-Existentes de Salud -->
+    <div class="page" id="page3">
+      <h2>Condiciones Pre-Existentes de Salud</h2>
+      <div id="condicionesContainer"></div>
+      <button type="button" onclick="addCondicion()"> Añadir Condición</button>
+      <div class="navigation-buttons">
+        <button type="button" onclick="previousPage()">⬅️</button>
+        <button type="button" onclick="nextPage()">➡️</button>
+        <button type="button" onclick="goToResumenPage()"> Mostrar Datos</button>
+      </div>
+    </div>
+
+    <!-- Página 4: Internamientos Realizados -->
+    <div class="page" id="page4">
+      <h2>Internamientos Realizados</h2>
+      <div id="internamientosContainer"></div>
+      <button type="button" onclick="addInternamiento()"> Añadir Internamiento</button>
+      <div class="navigation-buttons">
+        <button type="button" onclick="previousPage()">⬅️</button>
+        <button type="button" onclick="nextPage()">➡️</button>
+        <button type="button" onclick="goToResumenPage()"> Mostrar Datos</button>
+      </div>
+    </div>
+
+    <!-- Página 5: Mostrar Datos -->
+    <div class="page" id="page5">
+      <h2>Mostrar Datos</h2>
+      <div id="resumen"></div>
+      <div class="navigation-buttons">
+        <button type="button" onclick="previousPage()">⬅️</button>
+        <button type="button" onclick="submitForm()"> Grabar</button>
+        <button type="button" onclick="editForm()"> Editar</button>
+        <button type="button" onclick="resetForm()"> Borrar</button>
+        <button type="button" onclick="newData()"> Nuevos Datos</button>
+      </div>
+      <div id="navigationBetweenData" class="navigation-buttons">
+        <button type="button" onclick="previousData()">⬅️ Anterior</button>
+        <button type="button" onclick="nextData()">Siguiente ➡️</button>
+      </div>
+    </div>
+  </form>
+
+  <script>
+    
+    let currentPage = 1;
+    const form = document.getElementById('multiPageForm');
+    const totalPageCount = 5;
+
+    let formDataList = JSON.parse(localStorage.getItem('formDataList')) || [];
+    let currentDataIndex = 0;
+
+    function nextPage() {
+      if (currentPage < totalPageCount) {
+        document.getElementById('page' + currentPage).classList.remove('active');
+        currentPage++;
+        document.getElementById('page' + currentPage).classList.add('active');
+      }
+    }
+
+    function previousPage() {
+      if (currentPage > 1) {
+        document.getElementById('page' + currentPage).classList.remove('active');
+        currentPage--;
+        document.getElementById('page' + currentPage).classList.add('active');
+      }
+    }
+
+    function goToResumenPage() {
+      document.getElementById('page' + currentPage).classList.remove('active');
+      currentPage = 5;
+      document.getElementById('page5').classList.add('active');
+      displayData();
+    }
+
+    function addFamiliar() {
+      const container = document.getElementById('familiaresContainer');
+      const div = document.createElement('div');
+      div.style.marginBottom = "15px";
+      div.innerHTML = `
+        <label>Nombre:</label>
+        <input type="text" name="familiar">
+        <label>Parentesco:</label>
+        <input type="text" name="parentesco">
+        <label>Relación:</label>
+        <input type="text" name="relacion">
+        <label>Edad:</label>
+        <input type="number" name="edad">
+      `;
+      container.appendChild(div);
+    }
+
+    function addCondicion() {
+      const container = document.getElementById('condicionesContainer');
+      const div = document.createElement('div');
+      div.style.marginBottom = "15px";
+      div.innerHTML = `
+        <label>Enfermedad:</label>
+        <input type="text" name="enfermedad">
+        <label>Tiempo con la enfermedad (meses):</label>
+        <input type="number" name="tiempo">
+      `;
+      container.appendChild(div);
+    }
+
+    function addInternamiento() {
+      const container = document.getElementById('internamientosContainer');
+      const div = document.createElement('div');
+      div.style.marginBottom = "15px";
+      div.innerHTML = `
+        <label>Fecha:</label>
+        <input type="date" name="fecha">
+        <label>Centro Médico:</label>
+        <input type="text" name="centro">
+        <label>Diagnóstico:</label>
+        <input type="text" name="diagnostico">
+      `;
+      container.appendChild(div);
+    }
+
+    function submitForm() {
+      const formData = {
+        datosPersonales: {
+          nombre: document.getElementById('nombre').value,
+          apellido: document.getElementById('apellido').value,
+          edad: document.getElementById('edad').value,
+          trabajo: document.getElementById('trabajo').value
+        },
+        familiares: [],
+        condiciones: [],
+        internamientos: []
+      };
+
+      document.querySelectorAll('#familiaresContainer > div').forEach(div => {
+        formData.familiares.push({
+          nombre: div.querySelector('input[name="familiar"]').value,
+          parentesco: div.querySelector('input[name="parentesco"]').value,
+          relacion: div.querySelector('input[name="relacion"]').value,
+          edad: div.querySelector('input[name="edad"]').value
+        });
+      });
+
+      document.querySelectorAll('#condicionesContainer > div').forEach(div => {
+        formData.condiciones.push({
+          enfermedad: div.querySelector('input[name="enfermedad"]').value,
+          tiempo: div.querySelector('input[name="tiempo"]').value
+        });
+      });
+
+      document.querySelectorAll('#internamientosContainer > div').forEach(div => {
+        formData.internamientos.push({
+          fecha: div.querySelector('input[name="fecha"]').value,
+          centro: div.querySelector('input[name="centro"]').value,
+          diagnostico: div.querySelector('input[name="diagnostico"]').value
+        });
+      });
+
+      formDataList.push(formData);
+      localStorage.setItem('formDataList', JSON.stringify(formDataList));
+      currentDataIndex = formDataList.length - 1;
+      displayData();
+      nextPage();
+    }
+
+    function displayData() {
+      if (!formDataList.length) return;
+      const formData = formDataList[currentDataIndex];
+      const resumenContainer = document.getElementById('resumen');
+      resumenContainer.innerHTML = `
+        <h3>Datos Personales</h3>
+        <table>
+          <tr><th>Nombre</th><td>${formData.datosPersonales.nombre}</td></tr>
+          <tr><th>Apellido</th><td>${formData.datosPersonales.apellido}</td></tr>
+          <tr><th>Edad</th><td>${formData.datosPersonales.edad}</td></tr>
+          <tr><th>Trabajo</th><td>${formData.datosPersonales.trabajo}</td></tr>
+        </table>
+        <h3>Familiares</h3>
+        <table>
+          <tr><th>Nombre</th><th>Parentesco</th><th>Relación</th><th>Edad</th></tr>
+          ${formData.familiares.map(f => `
+            <tr>
+              <td>${f.nombre}</td>
+              <td>${f.parentesco}</td>
+              <td>${f.relacion}</td>
+              <td>${f.edad}</td>
+            </tr>`).join('')}
+        </table>
+        <h3>Condiciones Pre-Existentes</h3>
+        <table>
+          <tr><th>Enfermedad</th><th>Tiempo (meses)</th></tr>
+          ${formData.condiciones.map(c => `
+            <tr><td>${c.enfermedad}</td><td>${c.tiempo}</td></tr>`).join('')}
+        </table>
+        <h3>Internamientos</h3>
+        <table>
+          <tr><th>Fecha</th><th>Centro Médico</th><th>Diagnóstico</th></tr>
+          ${formData.internamientos.map(i => `
+            <tr><td>${i.fecha}</td><td>${i.centro}</td><td>${i.diagnostico}</td></tr>`).join('')}
+        </table>
+      `;
+    }
+
+    function editForm() { previousPage(); }
+
+    function resetForm() {
+      form.reset();
+      localStorage.removeItem('formDataList');
+      formDataList = [];
+      currentDataIndex = 0;
+      document.querySelectorAll('#familiaresContainer, #condicionesContainer, #internamientosContainer')
+        .forEach(c => c.innerHTML = '');
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page1').classList.add('active');
+      currentPage = 1;
+    }
+
+    function newData() {
+      form.reset();
+      document.querySelectorAll('#familiaresContainer, #condicionesContainer, #internamientosContainer')
+        .forEach(c => c.innerHTML = '');
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page1').classList.add('active');
+      currentPage = 1;
+    }
+
+    function previousData() {
+      if (currentDataIndex > 0) {
+        currentDataIndex--;
+        displayData();
+      }
+    }
+
+    function nextData() {
+      if (currentDataIndex < formDataList.length - 1) {
+        currentDataIndex++;
+        displayData();
+      }
+    }
+
+    window.onload = () => {
+      if (formDataList.length > 0) displayData();
+    };
+  </script>
+</body>
+</html>
